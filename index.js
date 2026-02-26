@@ -13,7 +13,15 @@ const client = new Client({
   ],
 });
 
-client.login(process.env.DISCORD_TOKEN);
+client.login(process.env.DISCORD_TOKEN)
+  .then(() => {
+    console.log('Bot logged in successfully!');
+  })
+  .catch((error) => {
+    console.error('Error logging in:', error);
+  });
+
+
 
 client.on("messageCreate", async (message) => {
   
