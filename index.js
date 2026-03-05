@@ -100,9 +100,4 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 
 
-client.on("messageCreate", async (message) => {
-  
-  if (message.author.bot) return;
 
-  message.channel.send(`${message.content}`);
-});
