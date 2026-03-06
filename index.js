@@ -7,6 +7,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import mongoose from 'mongoose'
+import Schema from './schemas/modal.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -86,15 +89,36 @@ client.on(Events.InteractionCreate, async (interaction) => {
 })
 
 
+mongoose.connect(process.env.MONGO_STRING)
+  .then(() => {
+    console.log('Connected to MongoDB successfully!');
+  })
+  .catch((error) => {
+    console.error('Error connecting to MongoDB:', error);
+  });
 
+client.on(Events.InteractionCreate, async (interaction) => {
+  if (interaction.isModalSubmit() && interaction.customId === 'createCharacter') {
+    const charName = interaction.fields.getTextInputValue('charName');
+    const charClass = interaction.fields.getStringSelectValues('charClass')[0];
+    const charRace = interaction.fields.getStringSelectValues('charRace')[0];
 
+    await Schema.create({
+      userId: interaction.user.id,
+      character: {
+        name: charName,
+        class: charClass,
+        race: charRace,
+      }
+    });
 
+    await interaction.reply({
+      content: `Character created successfully!\nName: ${charName}\nClass: ${charClass}\nRace: ${charRace}`,
+      ephemeral: true,
+    })
 
-
-
-
-
-
+  }
+});
 
 
 
